@@ -130,11 +130,11 @@ class MealReportState extends State<MealReport> {
     }
   }
 
-  var _scaffoldKey = GlobalKey<ScaffoldState>();
+  // var _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        key: _scaffoldKey,
+        // key: _scaffoldKey,
         appBar: AppBar(
           title: Text('Meal Report'),
         ),

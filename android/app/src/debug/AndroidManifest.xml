@@ -10,4 +10,5 @@
         android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions"/> -->
     <!-- <uses-sdk android:minSdkVersion="22"/> -->
+    <application android:requestLegacyExternalStorage="true"/>
 </manifest>
