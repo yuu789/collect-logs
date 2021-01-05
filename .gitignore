@@ -39,3 +39,8 @@ app.*.symbols
 
 # Obfuscation related
 app.*.map.json
+
+# Trash dart files
+lib/sample.dart
+lib/test_dropdown_button.dart
+lib/test_usage.dart
