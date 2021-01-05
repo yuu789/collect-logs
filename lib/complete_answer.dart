@@ -11,48 +11,43 @@ class CompleteAnswer extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                Column(
                   children: [
+                    Icon(
+                      Icons.check_circle_outline_rounded,
+                      size: 140,
+                      color: Colors.greenAccent,
+                    ),
                     Text(
-                      '送信しました！',
+                      ' 送信しました！',
                       style: TextStyle(
                         fontSize: 18,
                       ),
                     ),
                   ],
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      '回答ありがとうございました',
-                      style: TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
-                  ],
+                // Text('', style: TextStyle(fontSize: 18)),
+                Text(
+                  'ご協力ありがとうございました！',
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    RaisedButton(
-                      child: Text(
-                        '戻る',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.white,
-                        ),
-                      ),
-                      color: Colors.red,
-                      onPressed: () {
-                        Navigator.popUntil(
-                          context,
-                          ModalRoute.withName('/'),
-                        );
-                      },
-                    )
-                  ],
+                RaisedButton(
+                  child: Text(
+                    'ホーム',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
+                  ),
+                  color: Colors.red,
+                  onPressed: () {
+                    Navigator.popUntil(
+                      context,
+                      ModalRoute.withName('/'),
+                    );
+                  },
                 ),
               ],
             ),
