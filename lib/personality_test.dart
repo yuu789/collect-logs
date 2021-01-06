@@ -1,3 +1,4 @@
+import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'complete_answer.dart';
 
@@ -66,7 +67,9 @@ class _PersonalityTest extends State<PersonalityTest> {
     final url =
         'https://prod-25.japaneast.logic.azure.com:443/workflows/30d56a15a6bf47c688ea116f605a33a8/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=W7kPGfhHtHFWF_2U3weEfXdX_vZXypGZhJGSVgnl--o';
     var request = new BigFive(
-        userId: 'test', ansTime: DateTime.now().toString(), qAns10: qAns // ,
+        userId: devicename,
+        ansTime: DateTime.now().toString(),
+        qAns10: qAns // ,
         // mealCount: _selectedItemMealCount.value
         );
     var body = json.encode(request.toJson());
@@ -78,6 +81,20 @@ class _PersonalityTest extends State<PersonalityTest> {
       final data = json.decode(res.body);
       resData = data.statusCode.toString();
       print(resData);
+    }
+  }
+
+  var devicename = '';
+  void getDeviceName() {
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    if (Theme.of(context).platform == TargetPlatform.android) {
+      deviceInfo.androidInfo.then((AndroidDeviceInfo info) {
+        devicename = "${info.manufacturer}_${info.model}_${info.product}";
+      });
+    } else {
+      deviceInfo.iosInfo.then((IosDeviceInfo info) {
+        devicename = info.name;
+      });
     }
   }
 
@@ -95,7 +112,10 @@ class _PersonalityTest extends State<PersonalityTest> {
               //   qNum.toString(),
               // ),
               Text(
-                "Q" + (qNum + 1).toString() + ".  " + bigFive["questions"][qNum],
+                "Q" +
+                    (qNum + 1).toString() +
+                    ".  " +
+                    bigFive["questions"][qNum],
                 style: TextStyle(fontSize: 18),
               ),
               Column(
@@ -178,21 +198,6 @@ class _PersonalityTest extends State<PersonalityTest> {
                       Text(bigFive["choices"][6]),
                     ],
                   ),
-                  // Column(
-                  //   children: bigFive["choices"]
-                  //       .map(
-                  //         (String key) => ListTile(
-                  //           title: Text('hoge'),
-                  //           leading: Radio(
-                  //             value: key,
-                  //             groupValue: _selectedAnswer,
-                  //             onChanged: _handleRadioButton,
-                  //           ),
-                  //         ),
-                  //       )
-                  //       .toList(),
-                  // ),
-                  // Text(bigFive["choices"][0]),
                 ],
               ),
               Text(
@@ -209,21 +214,13 @@ class _PersonalityTest extends State<PersonalityTest> {
                 ),
                 color: Colors.red,
                 onPressed: () {
-                  // Navigator.pop(context);
                   print(_selectedAnswer);
 
-                  if (qAns == null) {
-                    qAns = [];
-                    print("init array");
-                  }
-                  // qAns.add(_selectedAnswer);
-                  // print(qAns);
-                  print(qNum);
-                  qAns[qNum] = _selectedAnswer;
-                  print(qAns);
+                  qAns[qNum] = _selectedAnswer + 1;
 
                   if (qAns[9] == -1) {
                     print("<10");
+                    print(devicename);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -231,15 +228,20 @@ class _PersonalityTest extends State<PersonalityTest> {
                       ),
                     );
                   } else {
-                    print("10");
+                    print("=10");
+
+                    getDeviceName();
+                    print(devicename);
+
+                    if (devicename != '') {
                     _send();
-                    // Navigator.pushNamed(context, '/');
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => CompleteAnswer(),
                       ),
                     );
+                    }
                   }
                 },
               ),

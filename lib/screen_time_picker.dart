@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:azblob/azblob.dart';
@@ -18,8 +19,24 @@ class _ScreenTimePickerState extends State<ScreenTimePicker> {
   final picker = ImagePicker();
   var pickedFileGlobal;
 
+  var devicename = '';
+  void getDeviceName() {
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    if (Theme.of(this.context).platform == TargetPlatform.android) {
+      deviceInfo.androidInfo.then((AndroidDeviceInfo info) {
+        devicename = "${info.manufacturer}_${info.model}_${info.product}";
+      });
+    } else {
+      deviceInfo.iosInfo.then((IosDeviceInfo info) {
+        devicename = info.name;
+      });
+    }
+  }
+
   Future getImageFromGallery() async {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    getDeviceName();
+    print(devicename);
     setState(() {
       _image = File(pickedFile.path);
       pickedFileGlobal = pickedFile;
@@ -36,6 +53,8 @@ class _ScreenTimePickerState extends State<ScreenTimePicker> {
       String container = "usage-storage";
       // get the mine type of the file
       String contentType = lookupMimeType(fileName);
+      fileName = devicename + '_' + fileName;
+      print('fileName : $fileName');
       await storage.putBlob('/$container/$fileName',
           bodyBytes: content,
           contentType: contentType,
@@ -85,14 +104,6 @@ class _ScreenTimePickerState extends State<ScreenTimePicker> {
                   ),
                 ],
               ),
-              // Container(
-              //   child: _image == null
-              //       ? Text('')
-              //       : Text(
-              //           '送信してください',
-              //           style: TextStyle(fontSize: 18),
-              //         ),
-              // ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
