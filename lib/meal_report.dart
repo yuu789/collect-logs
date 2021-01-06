@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
+import 'package:device_info/device_info.dart';
 
 class ListItem {
   int value;
@@ -53,6 +54,20 @@ class MealReportState extends State<MealReport> {
       item.add(ListItem(i + 1, dropdownitem[i]));
     }
     return item;
+  }
+
+  var devicename = '';
+  void getDeviceName() {
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    if (Theme.of(context).platform == TargetPlatform.android) {
+      deviceInfo.androidInfo.then((AndroidDeviceInfo info) {
+        devicename = "${info.manufacturer}_${info.model}_${info.product}";
+      });
+    } else {
+      deviceInfo.iosInfo.then((IosDeviceInfo info) {
+        devicename = info.name;
+      });
+    }
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -116,7 +131,9 @@ class MealReportState extends State<MealReport> {
     final url =
         "https://prod-03.japaneast.logic.azure.com:443/workflows/7b3099b1dd2b42898ded0173bde7782f/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=acZQqiM39oGM_-Ub94NhXRLDHNo8fQpzf7AJrLNWegE";
     var request = new MealContent(
-        userId: 'test', mealTime: _labelText, mealAs: _selectedItem.value // ,
+        userId: devicename,
+        mealTime: _labelText,
+        mealAs: _selectedItem.value // ,
         // mealCount: _selectedItemMealCount.value
         );
     var body = json.encode(request.toJson());
@@ -241,13 +258,18 @@ class MealReportState extends State<MealReport> {
                   children: [
                     RaisedButton(
                       onPressed: () {
-                        _send();
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CompleteAnswer(),
-                          ),
-                        );
+                        getDeviceName();
+                        print(devicename);
+                        if (_labelText == '' || _selectedItem.value == null) {
+                        } else {
+                          _send();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CompleteAnswer(),
+                            ),
+                          );
+                        }
                         // _scaffoldKey.currentState.showSnackBar(
                         //   SnackBar(
                         //     content: const Text('送信しました！'),
